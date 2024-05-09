@@ -1,0 +1,60 @@
+Features I want to add:
+Present:
+- Improving search
+	- Search when enter is pressed
+	- Block search button while search loading
+	- Prevent enter from launching search while search loading
+- Loading preset
+	- Loading preset search value to search bar
+	- Loading the actual preset results from search history
+- Set preset to current search results
+- Add viewing history
+	- Load complete history of search titles (scrollable)
+	- Change UI to show search title and how long it was searched from current time 
+	  (minutes, hours, days, weeks, months (max) ago)
+	- Load search results for particular search query when clicked on
+- Improve on storage:
+	- change json file management based on json file size (if file is too large)
+	- when done with file management, update the search_history... json file with empty items
+	- Include test data (what I experimented with)
+
+Future:
+- Option to load preset results
+- Load previous results if quit extension accidentally
+- Being able to navigate searches (previous and next)
+- Implement sessions
+	- Keep history for currently running session only
+	- Clear up search history once session is ended (except for preset)
+	- Once new session is started, on launch, load preset results (in front end, it will load preset instead of previous search)
+
+Completed features:
+- Initial extension features:
+	- Launch extension UI on click
+	- Perform search on youtube in headless once extension is loaded
+	- Load titles from search to the extension's UI
+
+- Improve search results:
+	- Show title description on hover
+	- Link to youtube video on clicking title
+
+- Add search feature:
+	- Adding search bar that can perform search
+	- perform search on clicking search icon
+
+- Add menu feature:
+	- Add menu bar button that loads and closes menu page
+	- Show different sections of menu (set preset, view history, history)
+
+
+Feature being implemented: 
+
+
+Bugs list
+Front-end
+- Allow frontend to access response from backend (check)
+- See if extension can open results on a separate window (check kinda)
+
+Back-end
+- Figure why the youtube page isn't running (check)
+- See if I can watch puppeteer in action with the ui loaded (forget)
+
