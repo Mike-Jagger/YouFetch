@@ -254,6 +254,15 @@ a:active {
     background-color: #df0000;
 }
 
+.failed {
+    transition: 0.5s;
+    background-color: #df0000;
+}
+
+.failed:hover {
+    background-color: #df0000;
+}
+
 .preseting-loading{
     background-color:#292828;
 }
@@ -269,6 +278,7 @@ a:active {
 .preseting-successful:hover {
     background-color: #00c16e;
 }
+
 
 #history {
     width: 265px;
