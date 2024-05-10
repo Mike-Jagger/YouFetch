@@ -9,21 +9,34 @@ const pathToHistory = "browse_data/search_history_and_results.json";
 // Load preset values on launch
 let searchValue;
 let presetResults;
-getPresetFromHistory()
+getPreset()
 
 app.get("/history", async (req, res) => {});
 
+
+// Manage preset
 app.get("/preset", async (req, res) => {
 	/* Sending response with following header to prevent blockage from CORS*/
 	res.setHeader("Access-Control-Allow-Origin", extensionURL);
 
-    console.log("Loading preset...");
+    /* Getting query message */
+	const setPreset = req.query.SetPreset;
+	console.log("\n Should set preset:", setPreset);
 
-    console.log(presetResults);
+    if (setPreset === 'true') {
+        // Set preset
+        setPreset();
 
-    res.json([searchValue, presetResults]);
+    } else {
+        // Load preset
+        console.log("Loading preset...");
 
-	console.log("Preset values succesfully sent");
+        console.log(presetResults);
+
+        res.json([searchValue, presetResults]);
+
+        console.log("Preset values succesfully sent");
+    }
 });
 
 app.get("/search", async (req, res) => {
@@ -32,7 +45,7 @@ app.get("/search", async (req, res) => {
 
 	/* Getting query message */
 	const searchQuery = req.query.Query;
-	console.log("\nSearch: ", searchQuery);
+	console.log("\nSearch:", searchQuery);
 
 	/* Sending response with following header to prevent blockage from CORS*/
 	res.setHeader("Access-Control-Allow-Origin", extensionURL);
@@ -136,8 +149,8 @@ function addResultToHistory(searchQuery, videoTitles, timeSearched) {
 	});
 }
 
-// Read contents of browser history file
-function getPresetFromHistory() {
+// Get preset from history file
+function getPreset() {
 	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
 		if (err) {
 			console.log(err);
@@ -157,6 +170,40 @@ function getPresetFromHistory() {
 					}
 				});
 			}
+		}
+	});
+}
+
+// Set preset value to current search
+function setPreset() {
+	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
+		if (err) {
+			console.log(err);
+		} else {
+			let browsingHistory = JSON.parse(data); //now it's an object
+
+			/* Check if browsing history is empty */
+			if (browsingHistory.history.length === 0) {
+				console.log("Preset not found in results in search history");
+				presetResults = null;
+			} else {
+                let lastSearch = browsingHistory.history[-1];
+				browsingHistory.presetId = lastSearch.timeSearched;
+
+                json = JSON.stringify(browsingHistory); //convert it back to json
+
+                // Define a callback function for writeFile
+                function writeFileCallback(err) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        console.log("JSON data is saved.");
+                    }
+                }
+
+                // Write back to file
+                fs.writeFile(pathToHistory, json, "utf8", writeFileCallback);
+            }
 		}
 	});
 }
