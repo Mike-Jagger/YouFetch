@@ -27,6 +27,9 @@ app.get("/preset", async (req, res) => {
     if (setPreset === 'true') {
         // Set preset
         await manageHistory("setPreset");
+        setTimeout(() => {
+            res.json({ message: 'Preset now set to Search'});
+        }, 1000);
 
     } else {
         // Load preset
