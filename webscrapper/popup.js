@@ -44,6 +44,45 @@ document.getElementById("displayFooter").addEventListener('click', function() {
 });
 
 
+// Set current search results as preset
+let cancel = false;
+document.getElementById("setPreset").addEventListener('click', async function() {
+    // Change 
+    setPresetButton = document.getElementById("setPreset");
+
+    // Disable the setPresetButton
+    if (!cancel) {
+        //setPresetButton.disabled = true;
+        setPresetButton.className = "footer-button preseting-loading"
+        setPresetButton.textContent = "Processing...";
+
+        // Simulate a request to the server
+        await fetch("http://localhost:3000/preset?SetPreset=true")
+            .then(response => {
+                setPresetButton.textContent = response.json().message;
+            })
+            .then(data => {
+                // Simulate processing delay
+                setPresetButton.className = "footer-button preseting-successful"
+                setPresetButton.textContent = "Preset successfully set";
+
+                setTimeout(() => {
+                    setPresetButton.textContent = "Cancel Preseting";
+                    setPresetButton.className = "footer-button cancel";
+                }, 2000);  // Wait for 2 seconds
+                cancel = true;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                setPresetButton.textContent = "Failed Preseting";
+                //setPresetButton.disabled = false;  // Re-enable the setPresetButton
+            });
+    }
+
+    
+});
+
+
 /* Helper functions */
 
 // Load contents
