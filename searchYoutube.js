@@ -1,122 +1,157 @@
-const puppeteer = require('puppeteer');
-const express = require('express');
+const puppeteer = require("puppeteer");
+const express = require("express");
 const app = express();
 const PORT = 3000;
-var fs = require('fs');
-const extensionURL = 'chrome-extension://hfampifggiplieplldnfcceebhafllpm';
-const pathToHistory = 'browse_data/search_history_and_results.json';
+var fs = require("fs");
+const extensionURL = "chrome-extension://hfampifggiplieplldnfcceebhafllpm";
+const pathToHistory = "browse_data/search_history_and_results.json";
 
-app.get('/history', async (req, res) => {
-    
+app.get("/history", async (req, res) => {});
+
+app.get("/preset", async (req, res) => {
+	/* Sending response with following header to prevent blockage from CORS*/
+	res.setHeader("Access-Control-Allow-Origin", extensionURL);
+
+	let preset = "Preset";
+
+	console.log("Loading preset value: ", preset);
 });
 
-app.get('/preset', async (req, res) => {
-    /* Sending response with following header to prevent blockage from CORS*/
-    res.setHeader('Access-Control-Allow-Origin', extensionURL);
+app.get("/search", async (req, res) => {
+	// Get time of search
+	const timeSearched = Date.now();
 
-    console.log("Starting");
+	/* Getting query message */
+	const searchQuery = req.query.Query;
+	console.log("\nSearch: ", searchQuery);
 
-});
+	/* Sending response with following header to prevent blockage from CORS*/
+	res.setHeader("Access-Control-Allow-Origin", extensionURL);
 
-app.get('/search', async (req, res) => {
-    /* Getting query message */
-    const searchQuery = req.query.Query;
-    console.log(searchQuery);
+	console.log("Starting");
 
-    /* Sending response with following header to prevent blockage from CORS*/
-    res.setHeader('Access-Control-Allow-Origin', extensionURL);
+	const browser = await puppeteer.launch({ headless: true });
 
-    console.log("Starting");
+	console.log("Browser opened");
 
-    const browser = await puppeteer.launch({ headless: true });
+	const page = await browser.newPage();
 
-    console.log("Browser opened");
+	console.log("Page opened");
 
-    const page = await browser.newPage();
+	let isContentLoaded = false;
 
-    console.log("Page opened");
+	console.log("Searching...");
 
-    let isContentLoaded = false;
+	while (!isContentLoaded) {
+		try {
+			await page.goto("https://www.youtube.com");
+			await page.type('input[name="search_query"]', searchQuery);
+			await page.click("button#search-icon-legacy");
 
-    console.log("Searching...");
+			await page.waitForSelector("#video-title");
 
-    while (!isContentLoaded) {
-        try {
-            await page.goto('https://www.youtube.com');
-            await page.type('input[name="search_query"]', searchQuery);
-            await page.click('button#search-icon-legacy');
+			console.log("Content Loaded");
 
-            await page.waitForSelector('#video-title');
+			const videoTitles = await page.evaluate(() => {
+				const titles = Array.from(
+					document.querySelectorAll("#video-title")
+				);
+				return titles.map((t) => [
+					t.innerText,
+					t.getAttribute("aria-label"),
+					t.href,
+				]);
+			});
 
-            console.log("Content Loaded");
+			console.log("Video titles added:");
 
-            const videoTitles = await page.evaluate(() => {
-                const titles = Array.from(document.querySelectorAll('#video-title'));
-                return titles.map(t => [t.innerText, t.getAttribute('aria-label'), t.href]);                
-            });        
+			console.log(videoTitles);
 
-            console.log("Video titles added:");
+			await browser.close();
 
-            console.log(videoTitles);
+			console.log("Browser closed");
 
-            await browser.close();
+			res.json(videoTitles);
 
-            console.log("Browser closed");
+			console.log("Titles sent successfully");
 
-            res.json(videoTitles);
+			isContentLoaded = true;
 
-            console.log("Titles sent successfully");
-
-            isContentLoaded = true;
-
-            /* Write contents to browsing history file */
-            // fs.readFile(pathToHistory, 'utf8', function readFileCallback(err, data){
-            //     if (err){
-            //         console.log(err);
-            //     } else {
-            //         let browsingHistory = JSON.parse(data); //now it's an object
-
-            //         /* Check if browsing history is empty */
-            //         if (browsingHistory.history[0].query === null || browsingHistory.history.length === 0) {
-            //             console.log("No search resuls in search history");
-            //             browsingHistory.history.shift();
-            //         }
-
-            //         browsingHistory.history.push({
-            //             query: searchQuery, 
-            //             result: videoTitles,
-            //             dateSearched: Date.now()
-            //         }); //add some data
-
-            //         json = JSON.stringify(browsingHistory); //convert it back to json
-
-            //         // Define a callback function for writeFile
-            //         function writeFileCallback(err) {
-            //             if (err) {
-            //                 console.log(err);
-            //             } else {
-            //                 console.log('JSON data is saved.');
-            //             }
-            //         }
-
-            //         fs.writeFile(pathToHistory, json, 'utf8', writeFileCallback); // write it back 
-            //     }
-            // });
-
-        } catch (error) {
-            if (error.name === "TimeoutError") {
-                console.log("Might take a little longer...");
-                isContentLoaded = false;
-            } else {
-                console.log(error.name + ": " + error.message);
-                isContentLoaded = true;
-                await browser.close();
-            }
-        }
-    }    
+			/* Write contents to browsing history file */
+			addToHistory(searchQuery, videoTitles, timeSearched);
+		} catch (error) {
+			if (error.name === "TimeoutError") {
+				console.log("Might take a little longer...");
+				isContentLoaded = false;
+			} else {
+				console.log(error.name + ": " + error.message);
+				isContentLoaded = true;
+				await browser.close();
+			}
+		}
+	}
 });
 
 app.listen(PORT, function (err) {
-    if (err) console.log(err);
-    console.log(`Server running on http://localhost:${PORT}`);
+	if (err) console.log(err);
+	console.log(`Server running on http://localhost:${PORT}`);
 });
+
+/* Helper functions */
+
+//Write contents to browsing history file
+function addResultToHistory(searchQuery, videoTitles, timeSearched) {
+	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
+		if (err) {
+			console.log(err);
+		} else {
+			let browsingHistory = JSON.parse(data); //now it's an object
+
+			/* Check if browsing history is empty */
+			if (browsingHistory.history.length === 0) {
+				console.log("No search resuls in search history");
+			}
+			browsingHistory.history.push({
+				query: searchQuery,
+				result: videoTitles,
+				dateSearched: timeSearched,
+			}); //add some data
+
+			json = JSON.stringify(browsingHistory); //convert it back to json
+
+			// Define a callback function for writeFile
+			function writeFileCallback(err) {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log("JSON data is saved.");
+				}
+			}
+			// Write back to file
+			fs.writeFile(pathToHistory, json, "utf8", writeFileCallback);
+		}
+	});
+}
+
+// Read contents of browser history file
+function getPresetFromHistory() {
+	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
+		if (err) {
+			console.log(err);
+		} else {
+			let browsingHistory = JSON.parse(data); //now it's an object
+
+			/* Check if browsing history is empty */
+			if (browsingHistory.history.length === 0) {
+				console.log("No preset resuls in search history");
+				return null;
+			} else {
+				browsingHistory.history.array.forEach((title) => {
+					if (title.dateSearched === browsingHistory.presetId) {
+						return title.videoTitles;
+					}
+				});
+			}
+		}
+	});
+}
