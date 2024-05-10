@@ -72,7 +72,7 @@ loadSkeleton();
 
 // Starting the extension
 document.addEventListener('DOMContentLoaded', async function() {
-    const response = await fetch('http://localhost:3000/preset?SetPreset=true');
+    const response = await fetch('http://localhost:3000/preset?SetPreset=false');
 
     const preset = await response.json();
 
