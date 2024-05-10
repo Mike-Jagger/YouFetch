@@ -7,7 +7,7 @@ Present:
 - Loading preset
 	- Loading preset search value to search bar
 	- Loading the actual preset results from search history
-- Set preset to current search results
+- Set preset to current search results when set preset is pressed
 - Add viewing history
 	- Load complete history of search titles (scrollable)
 	- Change UI to show search title and how long it was searched from current time 
