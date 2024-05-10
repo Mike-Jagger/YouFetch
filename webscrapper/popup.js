@@ -4,7 +4,7 @@ function loadSkeleton() {
 
     let skeletonCard = document.createElement('div');
     skeletonCard.className = 'youtube-title skeleton';
-    skeletonCard.id = 'Skeleton-template';
+    skeletonCard.id = 'skeletonTemplate';
 
     let skeletonText = document.createElement('div');
     skeletonText.className = 'skeleton-text';
@@ -31,16 +31,16 @@ function handleEnterPress(event) {
 // Launch search
 async function launchSearch() {
     // Block search from being initiated again by pressing enter or search button
-    document.getElementById("Search-button").removeEventListener('click', launchSearch);
-    document.getElementById('Search-bar').removeEventListener('keydown', handleEnterPress);
+    document.getElementById("searchButton").removeEventListener('click', launchSearch);
+    document.getElementById('searchBar').removeEventListener('keydown', handleEnterPress);
 
-    const resultsElement = document.getElementById('Main-content');
+    const resultsElement = document.getElementById('mainContent');
 
     resultsElement.innerHTML = '';
 
     loadSkeleton();
 
-    const searchQuery = document.getElementById('Search-bar').value;
+    const searchQuery = document.getElementById('searchBar').value;
     const response = await fetch(`http://localhost:3000/search?Query=${searchQuery}`);
     const videoTitles = await response.json();
 
@@ -63,8 +63,8 @@ async function launchSearch() {
     });
 
     // Add triggers once search is done loading
-    document.getElementById("Search-button").addEventListener('click', launchSearch);
-    document.getElementById('Search-bar').addEventListener('keydown', handleEnterPress);
+    document.getElementById("searchButton").addEventListener('click', launchSearch);
+    document.getElementById('searchBar').addEventListener('keydown', handleEnterPress);
 }
 
 // Load skeleton on launch
@@ -80,12 +80,12 @@ document.addEventListener('DOMContentLoaded', async function() {
     const videoTitles = preset[1];
 
     if (videoTitles !== null) {
-        const resultsElement = document.getElementById('Main-content');
+        const resultsElement = document.getElementById('mainContent');
 
         resultsElement.innerHTML = '';
 
         videoTitles.forEach(title => {
-            document.getElementById('Search-bar').value = searchValue;
+            document.getElementById('searchBar').value = searchValue;
             let youtubeTitle = document.createElement('div');
             youtubeTitle.className = 'youtube-title';
 
@@ -105,15 +105,15 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 // Trigger to search results
-document.getElementById("Search-button").addEventListener('click', launchSearch);
+document.getElementById("searchButton").addEventListener('click', launchSearch);
 
 // Check if enter is pressed when searching
-document.getElementById('Search-bar').addEventListener('keydown', handleEnterPress);
+document.getElementById('searchBar').addEventListener('keydown', handleEnterPress);
 
 // Displayinng the footer
 var isFooterDisplayed = false; // variable to check if button is clicked
-document.getElementById("Display-footer").addEventListener('click', function() {
-        const footer = document.getElementById("Footer"); // Get footer element
+document.getElementById("displayFooter").addEventListener('click', function() {
+        const footer = document.getElementById("footer"); // Get footer element
         
         // Display footer if not displayed
         if (!isFooterDisplayed) {

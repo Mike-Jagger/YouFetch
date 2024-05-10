@@ -190,14 +190,14 @@ a:active {
     height: 296px;
 }
 
-#Display-footer {
+#displayFooter {
     background-color:#646464;
     border: none;
     height: 16px;
     width: 100%;
 }
 
-#Display-footer:hover { 
+#displayFooter:hover { 
     background-color: #caccd1;
 }
 
@@ -242,7 +242,7 @@ a:active {
     background-color:#292828;
 }
 
-#History {
+#history {
     width: 265px;
     height: 158px;
     background-color:#fff;
