@@ -107,12 +107,11 @@ body {
     border-radius: 5px;
     border-top: 1px solid rgba(255,255,255,0.2);
     border-bottom: 1px solid rgba(255,255,255,0.2);
-    display: flex;
-    align-items: center;
 }
 
 .actual-content{
     margin-left: 6px;
+    margin-top: 6px;
     display: inline-block;
 }
 
