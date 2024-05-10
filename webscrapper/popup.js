@@ -50,19 +50,20 @@ document.getElementById("setPreset").addEventListener('click', async function() 
     // Change 
     setPresetButton = document.getElementById("setPreset");
 
-    // Disable the setPresetButton
+    // Manage preset
     if (!cancel) {
-        //setPresetButton.disabled = true;
+        // Start setting preset to last search logic
         setPresetButton.className = "footer-button preseting-loading"
         setPresetButton.textContent = "Processing...";
 
-        // Simulate a request to the server
+        // Request setting the preset to last search
         await fetch("http://localhost:3000/preset?SetPreset=true")
             .then(response => {
+                // Get confirmation message from server
                 setPresetButton.textContent = response.json().message;
             })
             .then(data => {
-                // Simulate processing delay
+                // Confirm preseting was successful and turn button to cancel
                 setPresetButton.className = "footer-button preseting-successful"
                 setPresetButton.textContent = "Preset successfully set";
 
@@ -70,14 +71,26 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                     setPresetButton.textContent = "Cancel Preseting";
                     setPresetButton.className = "footer-button cancel";
                 }, 2000);  // Wait for 2 seconds
+
                 cancel = true;
             })
             .catch(error => {
+                // Turn button back to set preset if loading failed
                 console.error('Error:', error);
+
+                // Turn button to failed load
+                setPresetButton.className = "footer-button cancel"
                 setPresetButton.textContent = "Failed Preseting";
-                //setPresetButton.disabled = false;  // Re-enable the setPresetButton
+                cancel = false;
+
+                // Turn button back to set preset
+                setTimeout( () => {
+                    setPresetButton.className = "footer-button";
+                    setPresetButton.textContent = "Set Preset";
+                }, 2000);
+                
             });
-    }
+    } else {}
 
     
 });
