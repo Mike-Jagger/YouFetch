@@ -2,7 +2,7 @@ const puppeteer = require("puppeteer");
 const express = require("express");
 const app = express();
 const PORT = 3000;
-var fs = require("fs");
+var fs = require("fs").promises;
 const extensionURL = "chrome-extension://hfampifggiplieplldnfcceebhafllpm";
 const pathToHistory = "browse_data/search_history_and_results.json";
 
@@ -10,7 +10,7 @@ const pathToHistory = "browse_data/search_history_and_results.json";
 let searchValue;
 let presetResults;
 
-getPresetFromHistory()
+manageHistory("getPreset");
 
 app.get("/history", async (req, res) => {});
 
@@ -26,7 +26,7 @@ app.get("/preset", async (req, res) => {
 
     if (setPreset === 'true') {
         // Set preset
-        setPresetToLastSearch();
+        await manageHistory("setPreset");
 
     } else {
         // Load preset
@@ -36,7 +36,7 @@ app.get("/preset", async (req, res) => {
 
         res.json([searchValue, presetResults]);
 
-        console.log("Preset values succesfully sent");
+        console.log("Preset values succesfully sent\n");
     }
 });
 
@@ -95,7 +95,7 @@ app.get("/search", async (req, res) => {
 			isContentLoaded = true;
 
 			// Write contents to browsing history file
-			addResultToHistory(searchQuery, videoTitles, timeSearched);
+            manageHistory("addToHistory", [searchQuery, videoTitles, timeSearched]);
 
 		} catch (error) {
 			if (error.name === "TimeoutError") {
@@ -112,106 +112,103 @@ app.get("/search", async (req, res) => {
 
 app.listen(PORT, function (err) {
 	if (err) console.log(err);
-	console.log(`\nServer running on http://localhost:${PORT}`);
+	console.log(`\nServer running on http://localhost:${PORT}\n`);
 });
 
 /* Helper functions */
 
+async function manageHistory(manageOption, manageArgs) {
+    try {
+        let data = await fs.readFile(pathToHistory, "utf8");
+        let browsingHistory = JSON.parse(data);
+
+        switch (manageOption) {
+            case "addToHistory":
+                console.log(manageArgs[0]);
+                addResultToHistory(manageArgs[0], manageArgs[1], manageArgs[2], browsingHistory);
+                break;
+            case "setPreset":
+                await setPresetToLastSearch(browsingHistory);
+                break;
+            case "getPreset":
+                await getPresetFromHistory(browsingHistory);
+                break;
+            default:
+                console.log("Manage History option not recognized");
+        }
+    } catch (err) {
+        console.log("Error managing history:", err);
+    }
+}
+
 //Write contents to browsing history file
-function addResultToHistory(searchQuery, videoTitles, timeSearched) {
-	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
-		if (err) {
-			console.log(err);
-		} else {
-			let browsingHistory = JSON.parse(data); //now it's an object
+async function addResultToHistory(searchQuery, videoTitles, timeLogged, browsingHistory) {
+    /* Check if browsing history is empty */
+    if (browsingHistory.history.length === 0) {
+        console.log("No search resuls in search history");
+    }
+    browsingHistory.history.push({
+        query: searchQuery,
+        result: videoTitles,
+        timeSearched: timeLogged,
+    }); //add some data
 
-			/* Check if browsing history is empty */
-			if (browsingHistory.history.length === 0) {
-				console.log("No search resuls in search history");
-			}
-			browsingHistory.history.push({
-				query: searchQuery,
-				result: videoTitles,
-				dateSearched: timeSearched,
-			}); //add some data
+    console.log({
+        query: searchQuery,
+        result: videoTitles,
+        timeSearched: timeLogged,
+    });
 
-			json = JSON.stringify(browsingHistory); //convert it back to json
-
-			// Define a callback function for writeFile
-			function writeFileCallback(err) {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log("JSON data is saved.");
-				}
-			}
-			// Write back to file
-			fs.writeFile(pathToHistory, json, "utf8", writeFileCallback);
-		}
-	});
+    await writeBackToHistoryFile(browsingHistory);
+    console.log(`Search: '${searchQuery}', added successfully`);
 }
 
 // Get preset from history file
-function getPresetFromHistory() {
-	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
-		if (err) {
-			console.log(err);
-		} else {
-			let browsingHistory = JSON.parse(data); //now it's an object
-            
-			/* Check if browsing history is empty */
-			if (browsingHistory.history.length === 0) {
-				console.log("Preset not found in results in search history");
-				presetResults = null;
-			} else {
-				browsingHistory.history.forEach((title) => {
-					if (title.timeSearched === browsingHistory.presetId) {
-                        console.log("\nPreset successfully Loaded");
-						presetResults = title.result;
-                        searchValue = title.query;
-					}
-				});
-			}
-		}
-	});
-    return "";
+async function getPresetFromHistory(browsingHistory) {            
+    /* Check if browsing history is empty */
+    if (browsingHistory.history.length === 0) {
+        console.log("Preset not found in results in search history");
+        presetResults = null;
+    } else {
+        browsingHistory.history.forEach((title) => {
+            if (title.timeSearched === browsingHistory.presetId) {
+                console.log("Preset Loaded successfully");
+                presetResults = title.result;
+                searchValue = title.query;
+            }
+        });
+    }
 }
 
 // Set preset value to current search
-function setPresetToLastSearch() {
-	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
-		if (err) {
-			console.log(err);
-		} else {
-			let browsingHistory = JSON.parse(data); //now it's an object
+async function setPresetToLastSearch(browsingHistory) {
+    /* Check if browsing history is empty */
+    let completed = false;
+    if (browsingHistory.history.length === 0) {
+        console.log("Preset not found in results in search history");
+        browsingHistory.presetId = lastSearch.timeSearched = null;
+        presetResults = null;
+        completed = true;
+    } else {
+        let lastSearch = browsingHistory.history.slice(-1)[0];
+        browsingHistory.presetId = lastSearch.timeSearched;
 
-			/* Check if browsing history is empty */
-			if (browsingHistory.history.length === 0) {
-				console.log("Preset not found in results in search history");
-				browsingHistory.presetId = lastSearch.timeSearched = null;
-                presetResults = null;
-			} else {
-                let lastSearch = browsingHistory.history.slice(-1)[0];
-				browsingHistory.presetId = lastSearch.timeSearched;
+        await writeBackToHistoryFile(browsingHistory);
+        completed = true;
+    }
+    await getPresetFromHistory(browsingHistory);
+    console.log("Preset updated successfully\n");
+}
 
-                json = JSON.stringify(browsingHistory); //convert it back to json
 
-                // Define a callback function for writeFile
-                function writeFileCallback(err) {
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log("Preset successfully updated.", getPresetFromHistory());
-                        // Update preset
-                        // getPresetFromHistory;
-                    }
-                }
+// Function to write back to json file using promises
+async function writeBackToHistoryFile(jsonObject) {
+    const json = JSON.stringify(jsonObject);  // Convert it back to json
 
-                // Write back to file
-                fs.writeFile(pathToHistory, json, "utf8", writeFileCallback);
-
-                
-            }
-		}
-	});
+    try {
+        await fs.writeFile(pathToHistory, json, "utf8");  // Write back to file
+        console.log("Writing completed");
+    } catch (err) {
+        console.log(err);
+    }
 }
