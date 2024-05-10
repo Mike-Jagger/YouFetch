@@ -9,6 +9,7 @@ const pathToHistory = "browse_data/search_history_and_results.json";
 // Load preset values on launch
 let searchValue;
 let presetResults;
+
 getPresetFromHistory()
 
 app.get("/history", async (req, res) => {});
@@ -26,9 +27,6 @@ app.get("/preset", async (req, res) => {
     if (setPreset === 'true') {
         // Set preset
         setPresetToLastSearch();
-        console.log("Preset successfully updated");
-
-        getPresetFromHistory();
         console.log(presetResults);
 
     } else {
@@ -41,6 +39,9 @@ app.get("/preset", async (req, res) => {
 
         console.log("Preset values succesfully sent");
     }
+
+    // Update preset
+    getPresetFromHistory();
 });
 
 app.get("/search", async (req, res) => {
@@ -97,8 +98,9 @@ app.get("/search", async (req, res) => {
 
 			isContentLoaded = true;
 
-			/* Write contents to browsing history file */
-			//addResultToHistory(searchQuery, videoTitles, timeSearched);
+			// Write contents to browsing history file
+			addResultToHistory(searchQuery, videoTitles, timeSearched);
+
 		} catch (error) {
 			if (error.name === "TimeoutError") {
 				console.log("Might take a little longer...");
@@ -114,7 +116,7 @@ app.get("/search", async (req, res) => {
 
 app.listen(PORT, function (err) {
 	if (err) console.log(err);
-	console.log(`Server running on http://localhost:${PORT}`);
+	console.log(`\nServer running on http://localhost:${PORT}`);
 });
 
 /* Helper functions */
@@ -138,6 +140,8 @@ function addResultToHistory(searchQuery, videoTitles, timeSearched) {
 			}); //add some data
 
 			json = JSON.stringify(browsingHistory); //convert it back to json
+            console.log("browsingHistory from add");
+            console.log(browsingHistory);
 
 			// Define a callback function for writeFile
 			function writeFileCallback(err) {
@@ -160,7 +164,7 @@ function getPresetFromHistory() {
 			console.log(err);
 		} else {
 			let browsingHistory = JSON.parse(data); //now it's an object
-
+            
 			/* Check if browsing history is empty */
 			if (browsingHistory.history.length === 0) {
 				console.log("Preset not found in results in search history");
@@ -168,7 +172,7 @@ function getPresetFromHistory() {
 			} else {
 				browsingHistory.history.forEach((title) => {
 					if (title.timeSearched === browsingHistory.presetId) {
-                        console.log("Preset successfully Loaded");
+                        console.log("\nPreset successfully Loaded");
 						presetResults = title.result;
                         searchValue = title.query;
 					}
@@ -189,11 +193,12 @@ function setPresetToLastSearch() {
 			/* Check if browsing history is empty */
 			if (browsingHistory.history.length === 0) {
 				console.log("Preset not found in results in search history");
-				presetResults = null;
+				browsingHistory.presetId = lastSearch.timeSearched = null;
+                presetResults = null;
 			} else {
-                let lastSearch = browsingHistory.history[-1];
+                let lastSearch = browsingHistory.history.slice(-1)[0];
 				browsingHistory.presetId = lastSearch.timeSearched;
-
+                
                 json = JSON.stringify(browsingHistory); //convert it back to json
 
                 // Define a callback function for writeFile
@@ -201,7 +206,7 @@ function setPresetToLastSearch() {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("JSON data is saved.");
+                        console.log("Preset successfully updated.");
                     }
                 }
 
