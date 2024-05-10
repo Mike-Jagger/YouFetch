@@ -6,8 +6,9 @@ var fs = require("fs").promises;
 const extensionURL = "chrome-extension://hfampifggiplieplldnfcceebhafllpm";
 const pathToHistory = "browse_data/search_history_and_results.json";
 
-// Load preset values on launch
+// Manage preset variables
 let searchValue;
+let previousePresetId;
 let presetResults;
 
 manageHistory("getPreset");
@@ -25,11 +26,17 @@ app.get("/preset", async (req, res) => {
 	console.log("\nShould set preset:", setPreset);
 
     if (setPreset === 'true') {
-        // Set preset
-        await manageHistory("setPreset");
-        setTimeout(() => {
-            res.json({ message: 'Preset now set to Search'});
-        }, 1000);
+        // Cancel setting preset
+        if(req.query.Cancel === 'true') {
+
+        // Set preset to current search
+        } else {
+            
+            await manageHistory("setPreset");
+            setTimeout(() => {
+                res.json({ message: 'Preset now set to Search'});
+            }, 1000);
+        }
 
     } else {
         // Load preset
@@ -181,6 +188,8 @@ async function getPresetFromHistory(browsingHistory) {
             }
         });
     }
+    // Get value of presetId to handle in case of cancellation
+    previousePresetId = browsingHistory.presetId;
 }
 
 // Set preset value to current search
@@ -189,7 +198,7 @@ async function setPresetToLastSearch(browsingHistory) {
     let completed = false;
     if (browsingHistory.history.length === 0) {
         console.log("Preset not found in results in search history");
-        browsingHistory.presetId = lastSearch.timeSearched = null;
+        browsingHistory.presetId = null;
         presetResults = null;
         completed = true;
     } else {
