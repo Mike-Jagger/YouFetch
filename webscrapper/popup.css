@@ -233,7 +233,9 @@ a:active {
     width: 192px;
     height: 37px;
     background-color:#52565e;
+    transition: 0.3s;
     color: #fff;
+    font-weight: bold;
     border-radius: 30px;
     border-width: 0px;
 }
