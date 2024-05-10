@@ -6,15 +6,24 @@ var fs = require("fs");
 const extensionURL = "chrome-extension://hfampifggiplieplldnfcceebhafllpm";
 const pathToHistory = "browse_data/search_history_and_results.json";
 
+// Load preset values on launch
+let searchValue;
+let presetResults;
+getPresetFromHistory()
+
 app.get("/history", async (req, res) => {});
 
 app.get("/preset", async (req, res) => {
 	/* Sending response with following header to prevent blockage from CORS*/
 	res.setHeader("Access-Control-Allow-Origin", extensionURL);
 
-	let preset = "Preset";
+    console.log("Loading preset...");
 
-	console.log("Loading preset value: ", preset);
+    console.log(presetResults);
+
+    res.json([searchValue, presetResults]);
+
+	console.log("Preset values succesfully sent");
 });
 
 app.get("/search", async (req, res) => {
@@ -31,16 +40,14 @@ app.get("/search", async (req, res) => {
 	console.log("Starting");
 
 	const browser = await puppeteer.launch({ headless: true });
-
-	console.log("Browser opened");
+    console.log("Browser opened");
 
 	const page = await browser.newPage();
-
-	console.log("Page opened");
+    console.log("Page opened");
 
 	let isContentLoaded = false;
-
-	console.log("Searching...");
+    
+    console.log("Searching...");
 
 	while (!isContentLoaded) {
 		try {
@@ -49,7 +56,6 @@ app.get("/search", async (req, res) => {
 			await page.click("button#search-icon-legacy");
 
 			await page.waitForSelector("#video-title");
-
 			console.log("Content Loaded");
 
 			const videoTitles = await page.evaluate(() => {
@@ -64,21 +70,18 @@ app.get("/search", async (req, res) => {
 			});
 
 			console.log("Video titles added:");
-
 			console.log(videoTitles);
 
 			await browser.close();
-
 			console.log("Browser closed");
 
 			res.json(videoTitles);
-
-			console.log("Titles sent successfully");
+			console.log("Video titles sent successfully");
 
 			isContentLoaded = true;
 
 			/* Write contents to browsing history file */
-			addToHistory(searchQuery, videoTitles, timeSearched);
+			//addResultToHistory(searchQuery, videoTitles, timeSearched);
 		} catch (error) {
 			if (error.name === "TimeoutError") {
 				console.log("Might take a little longer...");
@@ -143,12 +146,14 @@ function getPresetFromHistory() {
 
 			/* Check if browsing history is empty */
 			if (browsingHistory.history.length === 0) {
-				console.log("No preset resuls in search history");
-				return null;
+				console.log("Preset not found in results in search history");
+				presetResults = null;
 			} else {
-				browsingHistory.history.array.forEach((title) => {
-					if (title.dateSearched === browsingHistory.presetId) {
-						return title.videoTitles;
+				browsingHistory.history.forEach((title) => {
+					if (title.timeSearched === browsingHistory.presetId) {
+                        console.log("Preset successfully Loaded");
+						presetResults = title.result;
+                        searchValue = title.query;
 					}
 				});
 			}
