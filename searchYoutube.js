@@ -27,7 +27,6 @@ app.get("/preset", async (req, res) => {
     if (setPreset === 'true') {
         // Set preset
         setPresetToLastSearch();
-        console.log(presetResults);
 
     } else {
         // Load preset
@@ -140,8 +139,6 @@ function addResultToHistory(searchQuery, videoTitles, timeSearched) {
 			}); //add some data
 
 			json = JSON.stringify(browsingHistory); //convert it back to json
-            console.log("browsingHistory from add");
-            console.log(browsingHistory);
 
 			// Define a callback function for writeFile
 			function writeFileCallback(err) {
@@ -198,7 +195,7 @@ function setPresetToLastSearch() {
 			} else {
                 let lastSearch = browsingHistory.history.slice(-1)[0];
 				browsingHistory.presetId = lastSearch.timeSearched;
-                
+
                 json = JSON.stringify(browsingHistory); //convert it back to json
 
                 // Define a callback function for writeFile
