@@ -22,7 +22,7 @@ app.get("/preset", async (req, res) => {
 
     /* Getting query message */
 	const setPreset = req.query.SetPreset;
-	console.log("\n Should set preset:", setPreset);
+	console.log("\nShould set preset:", setPreset);
 
     if (setPreset === 'true') {
         // Set preset
@@ -38,9 +38,6 @@ app.get("/preset", async (req, res) => {
 
         console.log("Preset values succesfully sent");
     }
-
-    // Update preset
-    getPresetFromHistory();
 });
 
 app.get("/search", async (req, res) => {
@@ -177,6 +174,7 @@ function getPresetFromHistory() {
 			}
 		}
 	});
+    return "";
 }
 
 // Set preset value to current search
@@ -203,12 +201,16 @@ function setPresetToLastSearch() {
                     if (err) {
                         console.log(err);
                     } else {
-                        console.log("Preset successfully updated.");
+                        console.log("Preset successfully updated.", getPresetFromHistory());
+                        // Update preset
+                        // getPresetFromHistory;
                     }
                 }
 
                 // Write back to file
                 fs.writeFile(pathToHistory, json, "utf8", writeFileCallback);
+
+                
             }
 		}
 	});
