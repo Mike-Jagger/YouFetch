@@ -9,7 +9,7 @@ const pathToHistory = "browse_data/search_history_and_results.json";
 // Load preset values on launch
 let searchValue;
 let presetResults;
-getPreset()
+getPresetFromHistory()
 
 app.get("/history", async (req, res) => {});
 
@@ -25,7 +25,11 @@ app.get("/preset", async (req, res) => {
 
     if (setPreset === 'true') {
         // Set preset
-        setPreset();
+        setPresetToLastSearch();
+        console.log("Preset successfully updated");
+
+        getPresetFromHistory();
+        console.log(presetResults);
 
     } else {
         // Load preset
@@ -150,7 +154,7 @@ function addResultToHistory(searchQuery, videoTitles, timeSearched) {
 }
 
 // Get preset from history file
-function getPreset() {
+function getPresetFromHistory() {
 	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
 		if (err) {
 			console.log(err);
@@ -175,7 +179,7 @@ function getPreset() {
 }
 
 // Set preset value to current search
-function setPreset() {
+function setPresetToLastSearch() {
 	fs.readFile(pathToHistory, "utf8", function readFileCallback(err, data) {
 		if (err) {
 			console.log(err);
