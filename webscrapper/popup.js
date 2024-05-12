@@ -109,6 +109,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                 //Confirm preseting was successful and turn button to cancel
                 setPresetButton.className = "footer-button preseting-successful";
                 setPresetButton.textContent = requestMessage.message;
+                cancel = false;
 
                 // Turn button back to set preset
                 setTimeout(() => {
