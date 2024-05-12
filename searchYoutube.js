@@ -31,7 +31,7 @@ app.get("/preset", async (req, res) => {
             let responseMessage = await manageHistory("cancelPreseting");
             console.log(responseMessage);
             setTimeout(() => {
-                res.json({ message: 'Cancelled Successfully'});
+                res.json({ message: responseMessage});
             }, 1000);
 
         // Set preset to current search
