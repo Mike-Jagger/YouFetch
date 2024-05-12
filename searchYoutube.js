@@ -23,15 +23,20 @@ app.get("/preset", async (req, res) => {
 
     /* Getting query message */
 	const setPreset = req.query.SetPreset;
-	console.log("\nShould set preset:", setPreset);
 
     if (setPreset === 'true') {
         // Cancel setting preset
         if(req.query.Cancel === 'true') {
+            console.log("\nShould cancel:", req.query.Cancel);
+            let responseMessage = await manageHistory("cancelPreseting");
+            console.log(responseMessage);
+            setTimeout(() => {
+                res.json({ message: responseMessage});
+            }, 1000);
 
         // Set preset to current search
         } else {
-            
+            console.log("\nShould set preset:", setPreset);
             await manageHistory("setPreset");
             setTimeout(() => {
                 res.json({ message: 'Preset now set to Search'});
@@ -143,6 +148,8 @@ async function manageHistory(manageOption, manageArgs) {
             case "getPreset":
                 await getPresetFromHistory(browsingHistory);
                 break;
+            case "cancelPreseting":
+                return await cancelPreset(browsingHistory);
             default:
                 console.log("Manage History option not recognized");
         }
@@ -171,6 +178,22 @@ async function addResultToHistory(searchQuery, videoTitles, timeLogged, browsing
 
     await writeBackToHistoryFile(browsingHistory);
     console.log(`Search: '${searchQuery}', added successfully`);
+}
+
+async function cancelPreset(browsingHistory) {
+    console.log("Starting cancellation");
+
+    // Check if there is no previous preset
+    if (browsingHistory.presetId === null || previousePresetId === null) {
+        return "No preset found";
+    // Set current presetId to previous
+    } else {
+        console.log("Cancelling...")
+        browsingHistory.presetId = previousePresetId;
+        await writeBackToHistoryFile(browsingHistory);
+        return "Cancelled Successfully";
+    }
+        
 }
 
 // Get preset from history file
