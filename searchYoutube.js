@@ -146,7 +146,7 @@ async function manageHistory(manageOption, manageArgs) {
                 await setPresetToLastSearch(browsingHistory);
                 break;
             case "getPreset":
-                await getPresetFromHistory(browsingHistory);
+                await loadPresetFromHistory(browsingHistory);
                 break;
             case "cancelPreseting":
                 return await cancelPreset(browsingHistory);
@@ -191,14 +191,14 @@ async function cancelPreset(browsingHistory) {
         console.log("Cancelling...")
         browsingHistory.presetId = previousePresetId;
         await writeBackToHistoryFile(browsingHistory);
-        await getPresetFromHistory(browsingHistory);
+        await loadPresetFromHistory(browsingHistory);
         return "Cancelled Successfully";
     }
         
 }
 
 // Get preset from history file
-async function getPresetFromHistory(browsingHistory) {            
+async function loadPresetFromHistory(browsingHistory) {            
     /* Check if browsing history is empty */
     if (browsingHistory.history.length === 0) {
         console.log("Preset not found in results in search history");
@@ -232,7 +232,7 @@ async function setPresetToLastSearch(browsingHistory) {
         await writeBackToHistoryFile(browsingHistory);
         completed = true;
     }
-    await getPresetFromHistory(browsingHistory);
+    await loadPresetFromHistory(browsingHistory);
     console.log("Preset updated successfully\n");
 }
 
