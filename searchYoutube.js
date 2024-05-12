@@ -212,8 +212,6 @@ async function loadPresetFromHistory(browsingHistory) {
             }
         });
     }
-    // Get value of presetId to handle in case of cancellation
-    previousePresetId = browsingHistory.presetId;
 }
 
 // Set preset value to current search
@@ -226,10 +224,18 @@ async function setPresetToLastSearch(browsingHistory) {
         presetResults = null;
         completed = true;
     } else {
+        // Get last search made which is the current search
         let lastSearch = browsingHistory.history.slice(-1)[0];
+
+        // Get value of presetId to handle in case of cancellation
+        previousePresetId = browsingHistory.presetId;
+
+        // Set presetId to last search 
         browsingHistory.presetId = lastSearch.timeSearched;
 
+        // Werite back to file
         await writeBackToHistoryFile(browsingHistory);
+        
         completed = true;
     }
     await loadPresetFromHistory(browsingHistory);
