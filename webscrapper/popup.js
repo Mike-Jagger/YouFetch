@@ -117,6 +117,21 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                     setPresetButton.textContent = "Set Preset";
                 }, 2000);  // Wait for 2 seconds
             })
+            .catch(error => {
+                // Turn button back to set preset if cancelling failed
+                console.error('Error:', error);
+
+                // Turn button to failed load
+                setPresetButton.className = "footer-button cancel"
+                setPresetButton.textContent = "Failed Cancelling";
+                cancel = false;
+
+                // Turn button back to set preset
+                setTimeout( () => {
+                    setPresetButton.className = "footer-button";
+                    setPresetButton.textContent = "Set Preset";
+                }, 2000);
+            })
     }
 });
 
