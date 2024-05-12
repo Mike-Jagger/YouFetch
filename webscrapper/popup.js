@@ -1,4 +1,5 @@
 /* Starting the extension */
+//var bg = chrome.extension.getBackgroundPage(); // Access background page
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Load skeleton on launch
@@ -44,13 +45,13 @@ document.getElementById("displayFooter").addEventListener('click', function() {
 });
 
 
-// Set current search results as preset
+// Handle managing setPreset button
 let cancel = false;
 document.getElementById("setPreset").addEventListener('click', async function() {
     // Change 
     setPresetButton = document.getElementById("setPreset");
 
-    // Manage preset
+    // Manage setting preset
     if (!cancel) {
         // Start setting preset to last search logic
         setPresetButton.className = "footer-button preseting-loading"
@@ -67,6 +68,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                 setPresetButton.className = "footer-button preseting-successful"
                 setPresetButton.textContent = "Preset successfully set";
 
+                // Turn button to cancel preset
                 setTimeout(() => {
                     setPresetButton.textContent = "Cancel Preseting";
                     setPresetButton.className = "footer-button cancel";
@@ -90,9 +92,32 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                 }, 2000);
                 
             });
-    } else {}
+    // Manage canceling preset
+    } else {
+        // Start cancelling preseting
+        setPresetButton.className = "footer-button preseting-loading"
+        setPresetButton.textContent = "Processing...";
 
-    
+        let message;
+
+        await fetch("http://localhost:3000/preset?SetPreset=true&&Cancel=true")
+            .then(async response => {
+                // Get confirmation message from server
+                message = await response.json();
+                console.log(JSON.stringify(message));    
+            })
+            .then(data => {
+                //Confirm preseting was successful and turn button to cancel
+                setPresetButton.className = "footer-button preseting-successful";
+                setPresetButton.textContent = message.message;
+
+                // Turn button back to set preset
+                setTimeout(() => {
+                    setPresetButton.className = "footer-button";
+                    setPresetButton.textContent = "Set Preset";
+                }, 2000);  // Wait for 2 seconds
+            })
+    }
 });
 
 
