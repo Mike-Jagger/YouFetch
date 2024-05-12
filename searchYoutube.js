@@ -191,6 +191,7 @@ async function cancelPreset(browsingHistory) {
         console.log("Cancelling...")
         browsingHistory.presetId = previousePresetId;
         await writeBackToHistoryFile(browsingHistory);
+        await getPresetFromHistory(browsingHistory);
         return "Cancelled Successfully";
     }
         
