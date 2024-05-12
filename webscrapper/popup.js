@@ -98,18 +98,17 @@ document.getElementById("setPreset").addEventListener('click', async function() 
         setPresetButton.className = "footer-button preseting-loading"
         setPresetButton.textContent = "Processing...";
 
-        let message;
+        let requestMessage;
 
         await fetch("http://localhost:3000/preset?SetPreset=true&&Cancel=true")
             .then(async response => {
                 // Get confirmation message from server
-                message = await response.json();
-                console.log(JSON.stringify(message));    
+                requestMessage = await response.json();   
             })
             .then(data => {
                 //Confirm preseting was successful and turn button to cancel
                 setPresetButton.className = "footer-button preseting-successful";
-                setPresetButton.textContent = message.message;
+                setPresetButton.textContent = requestMessage.message;
 
                 // Turn button back to set preset
                 setTimeout(() => {
