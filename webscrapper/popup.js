@@ -52,7 +52,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
 
     // Manage setting preset
     if (!cancel) {
-        cancel = handleButtonOnStatus(
+        cancel = await handleButtonOnStatus(
                     setPresetButton,
                     cancel, 
                     "http://localhost:3000/preset?SetPreset=true", 
@@ -66,7 +66,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                 );
     // Manage canceling preset
     } else {
-        cancel = handleButtonOnStatus(
+        cancel = await handleButtonOnStatus(
                     setPresetButton,
                     cancel, 
                     "http://localhost:3000/preset?SetPreset=true&&Cancel=true", 
@@ -89,7 +89,7 @@ document.getElementById("viewHistory").addEventListener('click', async function(
 
     // Manage showing history
     if (!viewHistory) {
-        viewHistory = handleButtonOnStatus(
+        viewHistory = await handleButtonOnStatus(
                         viewHistoryButton,
                         viewHistory, 
                         "http://localhost:3000/preset?SetPreset=false", 
@@ -108,8 +108,7 @@ document.getElementById("viewHistory").addEventListener('click', async function(
         viewHistoryButton.textContent = "View History";
 
         document.getElementById('history').innerHTML = '';
-
-        viewHistory = false
+        viewHistory = false;
     }
 });
 
@@ -214,6 +213,7 @@ async function handleButtonOnStatus(button, status, requestURL, messages, button
             //Confirm operation was successful and display server message
             button.className = "footer-button preseting-successful";
             button.textContent = requestMessage.message;
+            status = true;
 
             // Turn button to next state
             setTimeout(() => {
@@ -228,7 +228,6 @@ async function handleButtonOnStatus(button, status, requestURL, messages, button
                 button.textContent = messages[1];
             }, 2000);  // Wait for 2 seconds
 
-            status = true;
         })
         .catch(error => {
             // Revert button to previous state on error
