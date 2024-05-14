@@ -101,14 +101,24 @@ document.getElementById("viewHistory").addEventListener('click', async function(
                         ],
                         "viewHistory"
                     );
+        // Turn on dark mode
+        document.getElementById("footerMenu").style.backgroundColor = "#282828";
+        document.getElementById("history").style.backgroundColor = "#3c3c3cc4";
+
     // Manage hiding history
     } else {
         // Turn button back to View History
         viewHistoryButton.className = "footer-button";
         viewHistoryButton.textContent = "View History";
 
+        // Empty history
         document.getElementById('history').innerHTML = '';
         viewHistory = false;
+
+        // Turn off dark mode
+        document.getElementById("footerMenu").style.backgroundColor = "#f3f4f7";
+        document.getElementById("history").style.backgroundColor = "#fff";
+
     }
 });
 
