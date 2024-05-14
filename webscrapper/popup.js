@@ -1,5 +1,4 @@
-/* Starting the extension */
-//var bg = chrome.extension.getBackgroundPage(); // Access background page
+/****  Starting the extension ****/
 
 document.addEventListener('DOMContentLoaded', async function() {
     // Load skeleton on launch
@@ -17,7 +16,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     loadContents(videoTitles);
 });
 
-/* Launch Search */
+/**** Launch Search ****/
 
 // Check search button is clicked
 document.getElementById("searchButton").addEventListener('click', launchSearch);
@@ -25,7 +24,7 @@ document.getElementById("searchButton").addEventListener('click', launchSearch);
 // Check if enter is pressed
 document.getElementById('searchBar').addEventListener('keydown', handleEnterPress);
 
-/* Menu Bar triggers */
+/**** Menu Bar triggers ****/
 
 // Activate menu bar
 var isFooterDisplayed = false; // variable to check if button is clicked
@@ -115,7 +114,7 @@ document.getElementById("viewHistory").addEventListener('click', async function(
 });
 
 
-/* Helper functions */
+/**** Helper functions ****/
 
 // Load contents
 function loadContents(videoTitles) {
@@ -198,7 +197,6 @@ async function launchSearch() {
 }
 
 // Handle button on status
-
 async function handleButtonOnStatus(button, status, requestURL, messages, buttonName) {
     // Start logic
     button.className = "footer-button preseting-loading"
