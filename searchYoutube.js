@@ -25,8 +25,10 @@ app.get("/preset", async (req, res) => {
 	const setPreset = req.query.SetPreset;
 
     if (setPreset === 'true') {
+        const shouldCancel = req.query.Cancel;
+
         // Cancel setting preset
-        if(req.query.Cancel === 'true') {
+        if(shouldCancel === 'true') {
             console.log("\nShould cancel:", req.query.Cancel);
             let responseMessage = await manageHistory("cancelPreseting");
             console.log(responseMessage);
@@ -35,15 +37,19 @@ app.get("/preset", async (req, res) => {
             }, 1000);
 
         // Set preset to current search
-        } else {
+        } else if (shouldCancel === 'false') {
             console.log("\nShould set preset:", setPreset);
             await manageHistory("setPreset");
             setTimeout(() => {
                 res.json({ message: 'Preset now set to Search'});
             }, 1000);
+
+        // Throw error if request can't be processed
+        } else {
+            res.sendStatus(400);
         }
 
-    } else {
+    } else if (setPreset === 'false') {
         // Load preset
         console.log("Loading preset...");
 
@@ -52,6 +58,8 @@ app.get("/preset", async (req, res) => {
         res.json([searchValue, presetResults]);
 
         console.log("Preset values succesfully sent\n");
+    } else {
+        res.sendStatus(400);
     }
 });
 

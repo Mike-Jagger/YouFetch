@@ -54,7 +54,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
     if (!cancel) {
         responseStatus = await handleButtonOnStatus(
                     setPresetButton,
-                    "http://localhost:3000/preset?SetPreset=true", 
+                    "http://localhost:3000/preset?SetPreset=true&&Cancel=false", 
                     [
                         "Processing...",
                         "Cancel Preseting",
