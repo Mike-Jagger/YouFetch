@@ -54,6 +54,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
     // Manage setting preset
     if (!cancel) {
         cancel = handleButtonOnStatus(
+                    setPresetButton,
                     cancel, 
                     "http://localhost:3000/preset?SetPreset=true", 
                     [
@@ -65,6 +66,7 @@ document.getElementById("setPreset").addEventListener('click', async function() 
     // Manage canceling preset
     } else {
         cancel = handleButtonOnStatus(
+                    setPresetButton,
                     cancel, 
                     "http://localhost:3000/preset?SetPreset=true&&Cancel=true", 
                     [
@@ -80,24 +82,25 @@ document.getElementById("setPreset").addEventListener('click', async function() 
 let viewHistory = false;
 document.getElementById("viewHistory").addEventListener('click', async function() {
     // Change 
-    let setPresetButton = document.getElementById("viewHistory");
+    let viewHistoryButton = document.getElementById("viewHistory");
 
     // Manage showing history
     if (!viewHistory) {
         viewHistory = handleButtonOnStatus(
-                    viewHistory, 
-                    "http://localhost:3000/preset?SetPreset=false", 
-                    [
-                        "Processing...",
-                        "Hide History",
-                        "Loading Failed",
-                        "View History"
-                    ]);
+                        viewHistoryButton,
+                        viewHistory, 
+                        "http://localhost:3000/preset?SetPreset=false", 
+                        [
+                            "Processing...",
+                            "Hide History",
+                            "Loading Failed",
+                            "View History"
+                        ]);
     // Manage hiding history
     } else {
         // Turn button back to View History
-        setPresetButton.className = "footer-button";
-        setPresetButton.textContent = "View History";
+        viewHistoryButton.className = "footer-button";
+        viewHistoryButton.textContent = "View History";
 
         document.getElementById('history').innerHTML = '';
 
@@ -190,10 +193,10 @@ async function launchSearch() {
 
 // Handle button on status
 
-async function handleButtonOnStatus(status, requestURL, ...messages) {
+async function handleButtonOnStatus(button, status, requestURL, ...messages) {
     // Start logic
-    setPresetButton.className = "footer-button preseting-loading"
-    setPresetButton.textContent = messages[0];
+    button.className = "footer-button preseting-loading"
+    button.textContent = messages[0];
 
     let requestMessage;
 
@@ -205,13 +208,13 @@ async function handleButtonOnStatus(status, requestURL, ...messages) {
         })
         .then(data => {
             //Confirm operation was successful and display server message
-            setPresetButton.className = "footer-button preseting-successful";
-            setPresetButton.textContent = requestMessage.message;
+            button.className = "footer-button preseting-successful";
+            button.textContent = requestMessage.message;
 
             // Turn button to next state
             setTimeout(() => {
-                setPresetButton.className = "footer-button cancel";
-                setPresetButton.textContent = messages[1];
+                button.className = "footer-button cancel";
+                button.textContent = messages[1];
             }, 2000);  // Wait for 2 seconds
 
             status = true;
@@ -221,14 +224,14 @@ async function handleButtonOnStatus(status, requestURL, ...messages) {
             console.error('Error:', error);
 
             // Turn button to failed load
-            setPresetButton.className = "footer-button cancel"
-            setPresetButton.textContent = messages[2];
+            button.className = "footer-button cancel"
+            button.textContent = messages[2];
             status = false;
 
             // Turn button back original state
             setTimeout( () => {
-                setPresetButton.className = "footer-button";
-                setPresetButton.textContent = messages[3];
+                button.className = "footer-button";
+                button.textContent = messages[3];
             }, 2000);
             
         });
