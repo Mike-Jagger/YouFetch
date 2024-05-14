@@ -53,6 +53,15 @@ document.getElementById("setPreset").addEventListener('click', async function() 
 
     // Manage setting preset
     if (!cancel) {
+        cancel = handleButtonOnStatus(
+                    cancel, 
+                    "http://localhost:3000/preset?SetPreset=true", 
+                    [
+                        "Processing...",
+                        "Cancel Preseting",
+                        "Failed Preseting",
+                        "Set Preset"
+                    ]);
         // Start setting preset to last search logic
         setPresetButton.className = "footer-button preseting-loading"
         setPresetButton.textContent = "Processing...";
@@ -94,6 +103,15 @@ document.getElementById("setPreset").addEventListener('click', async function() 
             });
     // Manage canceling preset
     } else {
+        cancel = handleButtonOnStatus(
+                    cancel, 
+                    "http://localhost:3000/preset?SetPreset=true&&Cancel=true", 
+                    [
+                        "Processing...",
+                        "Set Preset",
+                        "Failed Cancelling",
+                        "Set Preset"
+                    ]);
         // Start cancelling preseting
         setPresetButton.className = "footer-button preseting-loading"
         setPresetButton.textContent = "Processing...";
@@ -143,6 +161,16 @@ document.getElementById("viewHistory").addEventListener('click', async function(
 
     // Manage showing history
     if (!viewHistory) {
+        viewHistory = handleButtonOnStatus(
+                    viewHistory, 
+                    "http://localhost:3000/preset?SetPreset=false", 
+                    [
+                        "Processing...",
+                        "Hide History",
+                        "Loading Failed",
+                        "View History"
+                    ]);
+
         // Start setting preset to last search logic
         setPresetButton.className = "footer-button preseting-loading"
         setPresetButton.textContent = "Processing...";
@@ -276,4 +304,49 @@ async function launchSearch() {
     // Add triggers once search is done loading
     document.getElementById("searchButton").addEventListener('click', launchSearch);
     document.getElementById('searchBar').addEventListener('keydown', handleEnterPress);
+}
+
+// Handle button on status
+
+async function handleButtonOnStatus(status, requestURL, ...messages) {
+    // Start logic
+    setPresetButton.className = "footer-button preseting-loading"
+    setPresetButton.textContent = messages[0];
+
+    // Request to server
+    await fetch(requestURL)
+        .then(async response => {
+            // Get confirmation message from server
+            requestMessage = await response.json();   
+        })
+        .then(data => {
+            //Confirm operation was successful and display server message
+            setPresetButton.className = "footer-button preseting-successful";
+            setPresetButton.textContent = requestMessage.message;
+
+            // Turn button to next state
+            setTimeout(() => {
+                setPresetButton.className = "footer-button cancel";
+                setPresetButton.textContent = messages[1];
+            }, 2000);  // Wait for 2 seconds
+
+            status = true;
+        })
+        .catch(error => {
+            // Revert button to previous state on error
+            console.error('Error:', error);
+
+            // Turn button to failed load
+            setPresetButton.className = "footer-button cancel"
+            setPresetButton.textContent = messages[2];
+            status = false;
+
+            // Turn button back original state
+            setTimeout( () => {
+                setPresetButton.className = "footer-button";
+                setPresetButton.textContent = messages[3];
+            }, 2000);
+            
+        });
+    return status;
 }
