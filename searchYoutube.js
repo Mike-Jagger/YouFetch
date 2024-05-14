@@ -17,7 +17,15 @@ app.get("/history", async (req, res) => {
     /* Sending response with following header to prevent blockage from CORS*/
 	res.setHeader("Access-Control-Allow-Origin", extensionURL);
 
-
+    console.log("\nLoading history...");
+    let fullHistory = await manageHistory("getHistory");
+    console.log(fullHistory);
+    setTimeout(() => {
+        res.json({ 
+            message: "Successfully Loaded", 
+            history: fullHistory
+        });
+    }, 1000);
 });
 
 
@@ -259,7 +267,11 @@ async function setPresetToLastSearch(browsingHistory) {
 
 // Function to get full browsing history
 async function getFullHistory(browsingHistory) {
-    
+    searchTitles = []
+    browsingHistory.history.forEach((title) => {
+        searchTitles.push(title.query);
+    });
+    return searchTitles;
 }
 
 
