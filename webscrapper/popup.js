@@ -49,7 +49,7 @@ document.getElementById("displayFooter").addEventListener('click', function() {
 let cancel = false;
 document.getElementById("setPreset").addEventListener('click', async function() {
     // Change 
-    setPresetButton = document.getElementById("setPreset");
+    let setPresetButton = document.getElementById("setPreset");
 
     // Manage setting preset
     if (!cancel) {
@@ -132,6 +132,66 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                     setPresetButton.textContent = "Set Preset";
                 }, 2000);
             })
+    }
+});
+
+// Handle viewing history
+let viewHistory = false;
+document.getElementById("viewHistory").addEventListener('click', async function() {
+    // Change 
+    let setPresetButton = document.getElementById("viewHistory");
+
+    // Manage showing history
+    if (!viewHistory) {
+        // Start setting preset to last search logic
+        setPresetButton.className = "footer-button preseting-loading"
+        setPresetButton.textContent = "Processing...";
+
+        // Request setting the preset to last search
+        await fetch("http://localhost:3000/preset?SetPreset=false")
+            .then(response => {
+                // Get confirmation message from server
+                setPresetButton.textContent = response.json().message;
+            })
+            .then(data => {
+                // Confirm preseting was successful and turn button to cancel
+                setPresetButton.className = "footer-button preseting-successful"
+                setPresetButton.textContent = "History successfully loaded";
+
+                // Turn button to cancel preset
+                setTimeout(() => {
+                    setPresetButton.textContent = "Hide History";
+                    setPresetButton.className = "footer-button hide-history";
+                }, 2000);  // Wait for 2 seconds
+
+                viewHistory = true;
+            })
+            .catch(error => {
+                // Turn button back to set preset if loading failed
+                console.error('Error:', error);
+
+                // Turn button to failed load
+                setPresetButton.className = "footer-button cancel"
+                setPresetButton.textContent = "Couldn't load";
+                viewHistory = false;
+
+                // Turn button back to set preset
+                setTimeout( () => {
+                    setPresetButton.className = "footer-button";
+                    setPresetButton.textContent = "View History";
+                }, 2000);
+                
+            });
+    // Manage hiding history
+    } else {
+        // Turn button back to View History
+        setPresetButton.className = "footer-button";
+        setPresetButton.textContent = "View History";
+
+        document.getElementById('history').innerHTML = '';
+
+        viewHistory = false
+
     }
 });
 
