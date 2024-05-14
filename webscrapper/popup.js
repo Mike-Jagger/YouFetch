@@ -66,7 +66,6 @@ document.getElementById("setPreset").addEventListener('click', async function() 
 
         // Switch to cancel preseting if operation was successful
         cancel = responseStatus ? true : false;
-        console.log("Setting successful?", cancel);
 
     // Manage cancelling preset
     } else {
@@ -84,7 +83,6 @@ document.getElementById("setPreset").addEventListener('click', async function() 
 
         // Switch to set preset if operation was successful
         cancel = responseStatus ? false : true;
-        console.log("Cancel successful?", cancel);
     }
 });
 
@@ -110,7 +108,6 @@ document.getElementById("viewHistory").addEventListener('click', async function(
 
         // Switch to hide history if operation was successful
         viewHistory = responseStatus.status ? true : false;
-        console.log("View history off?", viewHistory);
 
         // Turn on dark mode on successful fetch
         if (viewHistory) {
