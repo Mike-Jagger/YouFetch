@@ -193,7 +193,7 @@ async function launchSearch() {
 
 // Handle button on status
 
-async function handleButtonOnStatus(button, status, requestURL, ...messages) {
+async function handleButtonOnStatus(button, status, requestURL, messages) {
     // Start logic
     button.className = "footer-button preseting-loading"
     button.textContent = messages[0];
