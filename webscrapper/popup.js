@@ -221,7 +221,7 @@ async function launchSearch() {
 // Handle button on status
 async function handleButtonOnStatus(button, requestURL, messages, buttonName) {
     // Start logic
-    button.className = "footer-button preseting-loading"
+    button.className = "footer-button loading"
     button.textContent = messages[0];
 
     let requestMessage;
@@ -235,7 +235,7 @@ async function handleButtonOnStatus(button, requestURL, messages, buttonName) {
         })
         .then(data => {
             //Confirm operation was successful and display server message
-            button.className = "footer-button preseting-successful";
+            button.className = "footer-button successful";
             button.textContent = requestMessage.message;
             status = true;
 
@@ -265,14 +265,14 @@ async function handleButtonOnStatus(button, requestURL, messages, buttonName) {
             console.error('Error:', error);
 
             // Turn button to failed load
-            button.className = "footer-button cancel";
+            button.className = "footer-button failed";
             button.textContent = messages[2];
             status = false;
 
             // Turn button back original state
             setTimeout( () => {
                 if (buttonName === "cancelPreset") {
-                    button.className = "footer-button cancel"
+                    button.className = "footer-button cancel";
                 } else {
                     button.className = "footer-button";
                 }

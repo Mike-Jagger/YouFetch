@@ -254,28 +254,19 @@ body {
     background-color: #df0000;
 }
 
-.failed {
-    transition: 0.5s;
-    background-color: #df0000;
-}
-
-.failed:hover {
-    background-color: #df0000;
-}
-
-.preseting-loading{
+.loading{
     background-color:#292828;
 }
 
-.preseting-loading:hover {
+.loading:hover {
     background-color:#292828;
 }
 
-.preseting-successful {
+.successful {
     background-color: #00c16e;
 }
 
-.preseting-successful:hover {
+.successful:hover {
     background-color: #00c16e;
 }
 
@@ -329,8 +320,12 @@ body {
     text-decoration: underline;
 }
 
-.hide-history {
+.hide-history, .failed {
     transition: 0.5s;
+    background-color: #f48924;
+}
+
+.failed:hover {
     background-color: #f48924;
 }
 
