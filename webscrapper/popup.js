@@ -62,45 +62,6 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                         "Failed Preseting",
                         "Set Preset"
                     ]);
-        // Start setting preset to last search logic
-        setPresetButton.className = "footer-button preseting-loading"
-        setPresetButton.textContent = "Processing...";
-
-        // Request setting the preset to last search
-        await fetch("http://localhost:3000/preset?SetPreset=true")
-            .then(response => {
-                // Get confirmation message from server
-                setPresetButton.textContent = response.json().message;
-            })
-            .then(data => {
-                // Confirm preseting was successful and turn button to cancel
-                setPresetButton.className = "footer-button preseting-successful"
-                setPresetButton.textContent = "Preset successfully set";
-
-                // Turn button to cancel preset
-                setTimeout(() => {
-                    setPresetButton.textContent = "Cancel Preseting";
-                    setPresetButton.className = "footer-button cancel";
-                }, 2000);  // Wait for 2 seconds
-
-                cancel = true;
-            })
-            .catch(error => {
-                // Turn button back to set preset if loading failed
-                console.error('Error:', error);
-
-                // Turn button to failed load
-                setPresetButton.className = "footer-button cancel"
-                setPresetButton.textContent = "Failed Preseting";
-                cancel = false;
-
-                // Turn button back to set preset
-                setTimeout( () => {
-                    setPresetButton.className = "footer-button";
-                    setPresetButton.textContent = "Set Preset";
-                }, 2000);
-                
-            });
     // Manage canceling preset
     } else {
         cancel = handleButtonOnStatus(
@@ -112,44 +73,6 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                         "Failed Cancelling",
                         "Set Preset"
                     ]);
-        // Start cancelling preseting
-        setPresetButton.className = "footer-button preseting-loading"
-        setPresetButton.textContent = "Processing...";
-
-        let requestMessage;
-
-        await fetch("http://localhost:3000/preset?SetPreset=true&&Cancel=true")
-            .then(async response => {
-                // Get confirmation message from server
-                requestMessage = await response.json();   
-            })
-            .then(data => {
-                //Confirm preseting was successful and turn button to cancel
-                setPresetButton.className = "footer-button preseting-successful";
-                setPresetButton.textContent = requestMessage.message;
-                cancel = false;
-
-                // Turn button back to set preset
-                setTimeout(() => {
-                    setPresetButton.className = "footer-button";
-                    setPresetButton.textContent = "Set Preset";
-                }, 2000);  // Wait for 2 seconds
-            })
-            .catch(error => {
-                // Turn button back to set preset if cancelling failed
-                console.error('Error:', error);
-
-                // Turn button to failed load
-                setPresetButton.className = "footer-button cancel"
-                setPresetButton.textContent = "Failed Cancelling";
-                cancel = false;
-
-                // Turn button back to set preset
-                setTimeout( () => {
-                    setPresetButton.className = "footer-button";
-                    setPresetButton.textContent = "Set Preset";
-                }, 2000);
-            })
     }
 });
 
@@ -170,46 +93,6 @@ document.getElementById("viewHistory").addEventListener('click', async function(
                         "Loading Failed",
                         "View History"
                     ]);
-
-        // Start setting preset to last search logic
-        setPresetButton.className = "footer-button preseting-loading"
-        setPresetButton.textContent = "Processing...";
-
-        // Request setting the preset to last search
-        await fetch("http://localhost:3000/preset?SetPreset=false")
-            .then(response => {
-                // Get confirmation message from server
-                setPresetButton.textContent = response.json().message;
-            })
-            .then(data => {
-                // Confirm preseting was successful and turn button to cancel
-                setPresetButton.className = "footer-button preseting-successful"
-                setPresetButton.textContent = "History successfully loaded";
-
-                // Turn button to cancel preset
-                setTimeout(() => {
-                    setPresetButton.textContent = "Hide History";
-                    setPresetButton.className = "footer-button hide-history";
-                }, 2000);  // Wait for 2 seconds
-
-                viewHistory = true;
-            })
-            .catch(error => {
-                // Turn button back to set preset if loading failed
-                console.error('Error:', error);
-
-                // Turn button to failed load
-                setPresetButton.className = "footer-button cancel"
-                setPresetButton.textContent = "Couldn't load";
-                viewHistory = false;
-
-                // Turn button back to set preset
-                setTimeout( () => {
-                    setPresetButton.className = "footer-button";
-                    setPresetButton.textContent = "View History";
-                }, 2000);
-                
-            });
     // Manage hiding history
     } else {
         // Turn button back to View History
@@ -219,7 +102,6 @@ document.getElementById("viewHistory").addEventListener('click', async function(
         document.getElementById('history').innerHTML = '';
 
         viewHistory = false
-
     }
 });
 
@@ -312,6 +194,8 @@ async function handleButtonOnStatus(status, requestURL, ...messages) {
     // Start logic
     setPresetButton.className = "footer-button preseting-loading"
     setPresetButton.textContent = messages[0];
+
+    let requestMessage;
 
     // Request to server
     await fetch(requestURL)
