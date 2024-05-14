@@ -47,14 +47,13 @@ document.getElementById("displayFooter").addEventListener('click', function() {
 // Handle managing setPreset button
 let cancel = false;
 document.getElementById("setPreset").addEventListener('click', async function() {
-    // Change 
+    // Button to monitor 
     let setPresetButton = document.getElementById("setPreset");
 
     // Manage setting preset
     if (!cancel) {
-        cancel = await handleButtonOnStatus(
+        responseStatus = await handleButtonOnStatus(
                     setPresetButton,
-                    cancel, 
                     "http://localhost:3000/preset?SetPreset=true", 
                     [
                         "Processing...",
@@ -64,34 +63,41 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                     ],
                     "setPreset"
                 );
-    // Manage canceling preset
+
+        // Switch to cancel preseting if operation was successful
+        cancel = responseStatus ? true : false;
+        console.log("Setting successful?", cancel);
+
+    // Manage cancelling preset
     } else {
-        cancel = await handleButtonOnStatus(
+        responseStatus = await handleButtonOnStatus(
                     setPresetButton,
-                    cancel, 
                     "http://localhost:3000/preset?SetPreset=true&&Cancel=true", 
                     [
                         "Processing...",
                         "Set Preset",
                         "Failed Cancelling",
-                        "Set Preset"
+                        "Cancel Preset"
                     ],
-                    "setPreset"
+                    "cancelPreset"
                 );
+
+        // Switch to set preset if operation was successful
+        cancel = responseStatus ? false : true;
+        console.log("Cancel successful?", cancel);
     }
 });
 
 // Handle viewing history
 let viewHistory = false;
 document.getElementById("viewHistory").addEventListener('click', async function() {
-    // Change 
+    // Button to monitor 
     let viewHistoryButton = document.getElementById("viewHistory");
 
     // Manage showing history
     if (!viewHistory) {
-        viewHistory = await handleButtonOnStatus(
+        responseStatus = await handleButtonOnStatus(
                         viewHistoryButton,
-                        viewHistory, 
                         "http://localhost:3000/preset?SetPreset=false", 
                         [
                             "Processing...",
@@ -101,9 +107,16 @@ document.getElementById("viewHistory").addEventListener('click', async function(
                         ],
                         "viewHistory"
                     );
-        // Turn on dark mode
-        document.getElementById("footerMenu").style.backgroundColor = "#282828";
-        document.getElementById("history").style.backgroundColor = "#3c3c3cc4";
+
+        // Switch to hide history if operation was successful
+        viewHistory = responseStatus ? true : false;
+        console.log("View history off?", viewHistory);
+
+        // Turn on dark mode on successful fetch
+        if (viewHistory) {
+            document.getElementById("footerMenu").style.backgroundColor = "#282828";
+            document.getElementById("history").style.backgroundColor = "#3c3c3cc4";
+        }
 
     // Manage hiding history
     } else {
@@ -206,12 +219,13 @@ async function launchSearch() {
 }
 
 // Handle button on status
-async function handleButtonOnStatus(button, status, requestURL, messages, buttonName) {
+async function handleButtonOnStatus(button, requestURL, messages, buttonName) {
     // Start logic
     button.className = "footer-button preseting-loading"
     button.textContent = messages[0];
 
     let requestMessage;
+    let status;
 
     // Request to server
     await fetch(requestURL)
@@ -229,11 +243,18 @@ async function handleButtonOnStatus(button, status, requestURL, messages, button
             setTimeout(() => {
                 //Assign class based on button name
                 let className;
-                if (buttonName === "setPreset") {
-                    className = "footer-button cancel";
-                } else if (buttonName === "viewHistory") {
-                    className = "footer-button hide-history";
+                switch (buttonName) {
+                    case "setPreset":
+                        className = "footer-button cancel";
+                        break;
+                    case "cancelPreset":
+                        className = "footer-button";
+                        break;
+                    case "viewHistory":
+                        className = "footer-button hide-history";
+                        break;
                 }
+
                 button.className = className;
                 button.textContent = messages[1];
             }, 2000);  // Wait for 2 seconds
@@ -250,7 +271,11 @@ async function handleButtonOnStatus(button, status, requestURL, messages, button
 
             // Turn button back original state
             setTimeout( () => {
-                button.className = "footer-button";
+                if (buttonName === "cancelPreset") {
+                    button.className = "footer-button cancel"
+                } else {
+                    button.className = "footer-button";
+                }
                 button.textContent = messages[3];
             }, 2000);
             
