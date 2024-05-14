@@ -98,7 +98,7 @@ document.getElementById("viewHistory").addEventListener('click', async function(
     if (!viewHistory) {
         responseStatus = await handleButtonOnStatus(
                         viewHistoryButton,
-                        "http://localhost:3000/preset?SetPreset=false", 
+                        "http://localhost:3000/history", 
                         [
                             "Processing...",
                             "Hide History",
@@ -109,7 +109,7 @@ document.getElementById("viewHistory").addEventListener('click', async function(
                     );
 
         // Switch to hide history if operation was successful
-        viewHistory = responseStatus ? true : false;
+        viewHistory = responseStatus.status ? true : false;
         console.log("View history off?", viewHistory);
 
         // Turn on dark mode on successful fetch
@@ -280,5 +280,12 @@ async function handleButtonOnStatus(button, requestURL, messages, buttonName) {
             }, 2000);
             
         });
+
+    if (buttonName === "viewHistory") {
+        return {
+            status: status, 
+            history: requestMessage.history
+        };
+    }
     return status;
 }

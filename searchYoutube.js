@@ -13,7 +13,12 @@ let presetResults;
 
 manageHistory("getPreset");
 
-app.get("/history", async (req, res) => {});
+app.get("/history", async (req, res) => {
+    /* Sending response with following header to prevent blockage from CORS*/
+	res.setHeader("Access-Control-Allow-Origin", extensionURL);
+
+
+});
 
 
 // Manage preset
@@ -154,10 +159,12 @@ async function manageHistory(manageOption, manageArgs) {
                 await setPresetToLastSearch(browsingHistory);
                 break;
             case "getPreset":
-                await loadPresetFromHistory(browsingHistory);
+                await getPresetFromHistory(browsingHistory);
                 break;
             case "cancelPreseting":
                 return await cancelPreset(browsingHistory);
+            case "getHistory":
+                return await getFullHistory(browsingHistory);
             default:
                 console.log("Manage History option not recognized");
         }
@@ -199,14 +206,14 @@ async function cancelPreset(browsingHistory) {
         console.log("Cancelling...")
         browsingHistory.presetId = previousePresetId;
         await writeBackToHistoryFile(browsingHistory);
-        await loadPresetFromHistory(browsingHistory);
+        await getPresetFromHistory(browsingHistory);
         return "Cancelled Successfully";
     }
         
 }
 
 // Get preset from history file
-async function loadPresetFromHistory(browsingHistory) {            
+async function getPresetFromHistory(browsingHistory) {            
     /* Check if browsing history is empty */
     if (browsingHistory.history.length === 0) {
         console.log("Preset not found in results in search history");
@@ -246,8 +253,13 @@ async function setPresetToLastSearch(browsingHistory) {
         
         completed = true;
     }
-    await loadPresetFromHistory(browsingHistory);
+    await getPresetFromHistory(browsingHistory);
     console.log("Preset updated successfully\n");
+}
+
+// Function to get full browsing history
+async function getFullHistory(browsingHistory) {
+    
 }
 
 
@@ -262,3 +274,4 @@ async function writeBackToHistoryFile(jsonObject) {
         console.log(err);
     }
 }
+
