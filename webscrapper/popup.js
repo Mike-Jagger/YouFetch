@@ -62,7 +62,9 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                         "Cancel Preseting",
                         "Failed Preseting",
                         "Set Preset"
-                    ]);
+                    ],
+                    "setPreset"
+                );
     // Manage canceling preset
     } else {
         cancel = handleButtonOnStatus(
@@ -74,7 +76,9 @@ document.getElementById("setPreset").addEventListener('click', async function() 
                         "Set Preset",
                         "Failed Cancelling",
                         "Set Preset"
-                    ]);
+                    ],
+                    "setPreset"
+                );
     }
 });
 
@@ -95,7 +99,9 @@ document.getElementById("viewHistory").addEventListener('click', async function(
                             "Hide History",
                             "Loading Failed",
                             "View History"
-                        ]);
+                        ],
+                        "viewHistory"
+                    );
     // Manage hiding history
     } else {
         // Turn button back to View History
@@ -193,7 +199,7 @@ async function launchSearch() {
 
 // Handle button on status
 
-async function handleButtonOnStatus(button, status, requestURL, messages) {
+async function handleButtonOnStatus(button, status, requestURL, messages, buttonName) {
     // Start logic
     button.className = "footer-button preseting-loading"
     button.textContent = messages[0];
@@ -213,7 +219,14 @@ async function handleButtonOnStatus(button, status, requestURL, messages) {
 
             // Turn button to next state
             setTimeout(() => {
-                button.className = "footer-button cancel";
+                //Assign class based on button name
+                let className;
+                if (buttonName === "setPreset") {
+                    className = "footer-button cancel";
+                } else if (buttonName === "viewHistory") {
+                    className = "footer-button hide-history";
+                }
+                button.className = className;
                 button.textContent = messages[1];
             }, 2000);  // Wait for 2 seconds
 
@@ -224,7 +237,7 @@ async function handleButtonOnStatus(button, status, requestURL, messages) {
             console.error('Error:', error);
 
             // Turn button to failed load
-            button.className = "footer-button cancel"
+            button.className = "footer-button cancel";
             button.textContent = messages[2];
             status = false;
 
