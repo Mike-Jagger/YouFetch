@@ -1,0 +1,366 @@
+* { 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    width: 280px;
+    height: 350px;
+    overflow: hidden;
+}
+
+body {
+    background-color: #292828;
+    color: #fff;
+    font-family: 'Lato', Arial, sans-serif;
+    font-size: 14px;
+    width: 280px;
+    height: 350px;
+    overflow: hidden;
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  
+
+/* Search Bar */
+
+.header{
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    width: 100%;
+    height: 54px;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #292828;
+    border-style: solid;
+    border-radius: 30px;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.7);
+    padding: 10px 5px;
+    width: 265px;
+    height: 32px;
+}
+
+.search-container:hover {
+    border-color: white;
+}
+
+.search-input {
+    flex: 1;
+    border-style: none;
+    background: none;
+    outline: none;
+    color: white;
+    font-size: 13px;
+    padding: 8px 10px;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.search-button {
+    background: none;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    color: white;
+}
+
+.search-button svg {
+    fill: rgba(255, 255, 255, 0.7);
+}
+
+.search-button svg:hover {
+    fill: white;
+}
+
+.search-input:focus {
+    color: #fff;
+}
+
+
+/* Contents section */
+.main-content{
+    height: 280px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width: 100%;
+}
+
+.youtube-title {
+    height: 50px;
+    width: 270px;
+    background-color: rgba(255,255,255,0);
+    border-radius: 5px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.actual-content{
+    margin-left: 6px;
+    margin-top: 6px;
+    display: inline-block;
+}
+
+#mainContent .a {
+    color: #fff;
+    width: 260px;
+    height: 11px;
+}
+
+#mainContent a:link {
+    color: #fff;
+    text-decoration: none;
+}
+
+#mainContent a:visited {
+    color: green;
+    text-decoration: none;
+}
+
+#mainContent a:hover {
+    color: #ffdd8b;
+    text-decoration: none;
+}
+
+#mainContent a:active {
+    color: #ffdd8b;
+    text-decoration: underline;
+}
+
+.main-content .youtube-title:hover {
+    background-color: rgba(0,0,0,0.4);
+    border-top: 1px solid rgba(255,255,255,1);
+    border-bottom: 1px solid rgba(255,255,255,1);
+    color: #ffdd8b;
+}
+
+
+.skeleton {
+    opacity: .7;
+    animation: skeleton-loading 1s linear infinite alternate;
+}
+
+.skeleton-text {
+    width: 260px;
+    height: 11px;
+    margin-top: 5px;
+    margin-left: 5px;
+    border-radius: 3px;
+    background-color: rgba(255,255,255,0.5);
+}
+
+.skeleton-text:last-child {
+    margin-bottom: 0px;
+    width: 80%;
+}
+
+@keyframes skeleton-loading {
+    0% {
+        background-color: rgba(255,255,255,0);
+    }
+
+    100% {
+        background-color: rgba(255,255,255,0.2);
+    }
+}
+
+
+/* Menu Bar */
+
+.footer{
+    background-color:#646464;
+    position: absolute;
+    bottom: -280px;
+    transition: 0.3s;
+    width: 100%;
+    height: 296px;
+}
+
+#displayFooter {
+    background-color:#646464;
+    border: none;
+    height: 16px;
+    width: 100%;
+}
+
+#displayFooter:hover { 
+    background-color: #caccd1;
+}
+
+.footer-dots {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.footer-dots .dot {
+    margin: 0;
+    top: 50%;
+    bottom: 50%;
+    height: 7px;
+    width: 7px;
+    background-color: #f3f4f7;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.footer-menu {
+    background-color:#f3f4f7;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 280px;
+    width: 100%;
+}
+
+.footer-button {
+    margin-top: 5px;
+    width: 192px;
+    height: 37px;
+    background-color:#52565e;
+    transition: 1s;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 30px;
+    border-width: 0px;
+}
+
+.footer-button:hover {
+    transition: 0s;
+    background-color:#292828;
+}
+
+.cancel {
+    transition: 0.5s;
+    background-color: #ff0000;
+}
+
+.cancel:hover {
+    background-color: #df0000;
+}
+
+.loading{
+    background-color:#292828;
+}
+
+.loading:hover {
+    background-color:#292828;
+}
+
+.successful {
+    background-color: #00c16e;
+}
+
+.successful:hover {
+    background-color: #00c16e;
+}
+
+
+#history {
+    width: 100%;
+    height: 158px;
+    transition: 0.3s;
+    background-color: #fff;
+}
+
+#history .history-title {
+    height: 40px;
+    width: 99%;
+    font-size: 13px;
+    font-weight: 500;
+    color: #fff;
+    background-color:#2a2a2a;
+    border: 1px solid #ffffff72;
+    margin: 3px auto;
+}
+
+#history .history-title:hover {
+    background-color: #000;
+    border: 1px solid #fff;
+}
+
+#history .a {
+    color: #fff;
+    width: 260px;
+    height: 11px;
+}
+
+#history a:link {
+    color: #fff;
+    text-decoration: none;
+}
+
+#history a:visited {
+    color: #fff;
+    text-decoration: none;
+}
+
+#history a:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+#history a:active {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.hide-history, .failed {
+    transition: 0.5s;
+    background-color: #f48924;
+}
+
+.failed:hover {
+    background-color: #f48924;
+}
+
+.hide-history:hover {
+    background-color: #d8761a;
+}
+
+
+/* Side bar of main-content section*/
+
+/* width */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 200px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background-color: rgba(243, 244, 247, 0.5);
+    border-radius: 15px;
+}
+
+/* Track on hover */
+::-webkit-scrollbar-track:hover {
+    background-color: rgba(243, 244, 247, 0.7);
+    border-radius: 15px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgba(41, 40, 40, 0.5);
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(41, 40, 40, 0.7);
+}

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="popup.css">
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="search-container">
+                    <input type="text" id="searchBar" placeholder="Search" class="search-input">
+                    <button id="searchButton" class="search-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.415l-3.85-3.85a1.073 1.073 0 0 0-.115-.098zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <div id="mainContent" class="main-content">
+                <!-- <div id="skeletonTemplate" class="youtube-title skeleton">
+                    <div class="skeleton-text"></div>
+                    <div class="skeleton-text"></div>
+                </div> -->
+                <!-- <div class="youtube-title">
+                    <a class="actual-content" 
+                        href="https://youtube.com" 
+                        title="Electronic Computing: Crash Course Compute"> 
+                        Early Computing: Crash Course Computer Science #1 ce #1
+                    </a>
+                </div> 
+                Sample followed in javascript code to load youtube titles
+                -->
+            </div>
+
+            <div id="footer" class="footer">
+                <button type="button" id="displayFooter" class="footer-dots">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </button>
+                
+                
+                <div id="footerMenu" class="footer-menu">
+                    <button id="setPreset" class="footer-button">Set Preset</button>
+                    <button id="viewHistory" class="footer-button">View History</button>
+                    <div id="history" class="main-content">
+                        <!-- <div class="youtube-title history-title">
+                            <a class="actual-content" 
+                                href="https://youtube.com" 
+                                title="Electronic Computing: Crash Course Compute"> 
+                                Early Computing: Crash Course Computer Science #1 ce #1
+                            </a>
+                        </div> 
+                        Sample followed in javascript code to load search history
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="popup.js"></script>
+    </body>
+</html>
