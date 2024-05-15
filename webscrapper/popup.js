@@ -115,6 +115,23 @@ document.getElementById("viewHistory").addEventListener('click', async function(
             document.getElementById("history").style.backgroundColor = "#3c3c3cc4";
         }
 
+        const fullBrowsingHistory = responseStatus.history;
+        const historySection = document.getElementById("history");
+
+        historySection.innerHTML = '';
+
+        fullBrowsingHistory.forEach((title) => {
+            const historyTitle = document.createElement('div');
+            historyTitle.className = "youtube-title history-title";
+
+            const anchor = document.createElement('a');
+            anchor.className = "actual-content";
+            anchor.innerText = title;
+
+            historyTitle.appendChild(anchor);
+            historySection.appendChild(historyTitle);
+        })
+
     // Manage hiding history
     } else {
         // Turn button back to View History
