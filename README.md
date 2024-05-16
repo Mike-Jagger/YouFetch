@@ -12,6 +12,6 @@ Make sure to check the Kanban board [here](https://www.figma.com/board/L7wDKDxPu
 
 ## Demo
 Here is a little demo of how it works (will update with updates in features)
-![](Demo/demo1.gif)
+![](https://github.com/Mike-Jagger/YouFetch/Demo/demo1.gif)
 ## More
 ...more details coming soon
